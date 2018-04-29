@@ -1,16 +1,16 @@
 {
     "files": [
-      "server/server.ts"
+      "src/server.ts"
     ],
     "include": [
-      "server/**/*.ts"
+      "src/**/*.ts"
     ],
     "compilerOptions": {
       "module": "commonjs",
       "noImplicitAny": true,
       "target": "es6",
       "outDir": "dist",
-      "rootDir": "server",
+      "rootDir": "src",
       "sourceMap": true,
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
@@ -21,7 +21,7 @@
       "paths": {
         "*": [
           "node_modules/@types/*",
-          "./server/types/*"
+          "./src/types/*"
         ]
       }
     }

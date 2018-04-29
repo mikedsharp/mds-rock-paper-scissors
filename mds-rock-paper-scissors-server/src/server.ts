@@ -1,6 +1,6 @@
 import * as express from "express";
 import {Server, Path, GET, PathParam} from "typescript-rest";
-import {SomethingController} from './controllers/something.controller';
+import {SomethingController} from './something/SomethingController';
  
 @Path("/hello")
 class HelloService {
