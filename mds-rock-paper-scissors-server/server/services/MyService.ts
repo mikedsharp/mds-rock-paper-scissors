@@ -1,10 +1,8 @@
 import axios from 'axios';
 
 export abstract class MyService {
-    public static getSomething() {
-        return axios.get('http://google.com')
-                    .then(() => {
-                        return 'here is something...';
-                    });
+    public static async getSomething() {
+        const result = await axios.get('http://google.com');
+        return 'heres something...';
     }
 }
