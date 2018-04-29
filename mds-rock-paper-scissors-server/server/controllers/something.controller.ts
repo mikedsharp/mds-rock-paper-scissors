@@ -1,9 +1,9 @@
 import {Path, GET} from "typescript-rest";
- 
+import {MyService} from '../services/MyService';
 @Path("/something")
 export class SomethingController {
   @GET
-  saySomething() {
-    return "something...";
+  async saySomething() {
+    return await MyService.getSomething();
   }
 }
