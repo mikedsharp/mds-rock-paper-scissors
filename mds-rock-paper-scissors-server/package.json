@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers ts:ts-node/register tests/**/**.ts",
+    "test": "mocha --require ts-node/register tests/**/**.ts",
     "build": "webpack --config webpack.config.js",
     "start": "npm run build && node ./dist/server.js --inspect"
   },
