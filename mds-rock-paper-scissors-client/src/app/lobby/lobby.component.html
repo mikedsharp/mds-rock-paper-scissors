@@ -1,1 +1,5 @@
 <h1>Finding you an opponent...</h1>
+<button (click)="sendMessage('hey server')">Send message</button>
+<ul>
+    <li *ngFor="let message of messages">{{message}}</li>
+</ul>

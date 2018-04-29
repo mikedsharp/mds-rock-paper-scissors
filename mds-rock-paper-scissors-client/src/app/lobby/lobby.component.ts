@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {SocketService} from '../matchmaker/shared/services/socket.service';
 
 @Component({
   selector: 'app-lobby',
@@ -7,9 +8,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LobbyComponent implements OnInit {
 
-  constructor() { }
+  private messageContent: string;
+  private ioConnection: any;
+  private messages: any[] = [];
+  
+  constructor(private socketService: SocketService) { 
 
-  ngOnInit() {
+  }
+
+  ngOnInit(): void {
+    this.initIoConnection();
+  }
+
+  sendMessage(message: string):void {
+    this.socketService.send(message);
+  }
+
+  private initIoConnection(): void {
+    this.socketService.initSocket();
+
+    this.ioConnection = this.socketService.onMessage()
+      .subscribe((message: any) => {
+        this.messages.push(message);
+      });
   }
 
 }

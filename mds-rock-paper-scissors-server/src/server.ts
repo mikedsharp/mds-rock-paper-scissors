@@ -1,20 +1,17 @@
 import * as express from "express";
 import {Server, Path, GET, PathParam} from "typescript-rest";
 import {SomethingController} from './something/SomethingController';
- 
-@Path("/hello")
-class HelloService {
-  @Path(":name")
-  @GET
-  sayHello( @PathParam('name') name: string): string {
-    return "Hello " + name;
-  }
-}
+import {MatchMakerService} from './matchmaker/services/MatchMakerService';
  
 let app: express.Application = express();
 Server.buildServices(app, SomethingController);
- 
+
+const matchMaker = new MatchMakerService(app, 3000);
+
+/*
 app.listen(3000, function() {
   console.log('Rest Server listening on port 3000!');
 });
+*/
+
  

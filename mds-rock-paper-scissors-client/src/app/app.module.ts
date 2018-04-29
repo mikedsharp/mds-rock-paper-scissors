@@ -7,6 +7,8 @@ import { AppComponent } from './app.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { PlayAreaComponent } from './play-area/play-area.component';
+import { MatchmakerModule } from './matchmaker/matchmaker.module';
+import { SocketService } from './matchmaker/shared/services/socket.service';
 
 
 const appRoutes: Routes = [
@@ -28,9 +30,10 @@ const appRoutes: Routes = [
     RouterModule.forRoot(
       appRoutes,
       {enableTracing: true}
-    )
+    ),
+    MatchmakerModule
   ],
-  providers: [],
+  providers: [SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
