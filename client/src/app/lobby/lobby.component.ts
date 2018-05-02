@@ -47,5 +47,4 @@ export class LobbyComponent implements OnInit {
         this.opponent = data.opponent;
       });
   }
-
 }
