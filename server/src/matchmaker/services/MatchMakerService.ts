@@ -63,6 +63,7 @@ export class MatchMakerService {
             });
 
             socket.on('disconnect', () => {
+                console.log(`client disconnected`);
                 for(var socketId in this.players) {
                     if(this.players[socketId].socket === socket.id) {
                         console.log(`${this.players[socketId].username} disconnected`);
