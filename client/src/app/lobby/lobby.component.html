@@ -1,5 +1,9 @@
-<h1>Finding you an opponent...</h1>
-<button (click)="sendMessage('hey server')">Send message</button>
+<h1>Game lobby</h1>
+<span>{{username}}</span><br/>
+<input [disabled]="nameSubmitted" #usernameField type="text" (keyup)="setUsername(usernameField.value)" />
+<button [disabled]="nameSubmitted" (click)="registerPlayer(username)">Register with matchmaker server</button>
+<h3 *ngIf="nameSubmitted">Registered with matchmaker server, finding you an opponent!</h3>
+<h3 *ngIf="opponent">You have been matched with '{{opponent}}'</h3>
 <ul>
     <li *ngFor="let message of messages">{{message}}</li>
 </ul>

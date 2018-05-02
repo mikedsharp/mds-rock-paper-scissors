@@ -11,25 +11,40 @@ export class LobbyComponent implements OnInit {
   private messageContent: string;
   private ioConnection: any;
   private messages: any[] = [];
-  
-  constructor(private socketService: SocketService) { 
+  private username: string;
+  private nameSubmitted: boolean;
+  private opponent: object;
+
+  constructor(private socketService: SocketService) {
 
   }
 
   ngOnInit(): void {
+    this.username = '';
+    this.opponent = null;
+    this.nameSubmitted = false;
     this.initIoConnection();
   }
 
-  sendMessage(message: string):void {
+  sendMessage(message: string): void {
     this.socketService.send(message);
+  }
+
+  registerPlayer(name: string) {
+    this.nameSubmitted = true;
+    this.socketService.registerPlayer(name);
+  }
+
+  setUsername(username: string) {
+    this.username = username;
   }
 
   private initIoConnection(): void {
     this.socketService.initSocket();
 
-    this.ioConnection = this.socketService.onMessage()
-      .subscribe((message: any) => {
-        this.messages.push(message);
+    this.ioConnection = this.socketService.onPlayerMatched()
+      .subscribe((data: any) => {
+        this.opponent = data.opponent;
       });
   }
 

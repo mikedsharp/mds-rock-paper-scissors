@@ -8,10 +8,9 @@ Server.buildServices(app, SomethingController);
 
 const matchMaker = new MatchMakerService(app, 3000);
 
-/*
-app.listen(3000, function() {
-  console.log('Rest Server listening on port 3000!');
+app.listen(8080, function() {
+  console.log('Rest Server listening on port 8080!');
 });
-*/
+
 
  

@@ -9,18 +9,22 @@ const SERVER_URL = 'http://localhost:3000';
 @Injectable()
 export class SocketService {
   private socket;
-  
+
   public initSocket(): void {
     this.socket = socketIo(SERVER_URL);
   }
 
-  public send(message:any): void {
+  public send(message: any): void {
     this.socket.emit('message', message);
   }
 
-  public onMessage(): Observable<any> {
+  public registerPlayer(name: string) {
+    this.socket.emit('register-player', {username: name});
+  }
+
+  public onPlayerMatched(): Observable<any> {
     return new Observable<any>(observer => {
-      this.socket.on('message', (data: any) => observer.next(data));
+      this.socket.on('player-matched', (data: any) => observer.next(data));
     });
   }
 }
