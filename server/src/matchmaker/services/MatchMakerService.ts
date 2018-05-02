@@ -17,7 +17,6 @@ export class MatchMakerService {
         this.createServer();
         this.sockets();
         this.listen();
-        this.poller = setInterval(() => this.matchPlayers(), 1000);
     }
     private sockets(): void {
         this.io = socketIo(this.server);
@@ -52,6 +51,10 @@ export class MatchMakerService {
         this.io.on('connect', (socket: any) => {
             console.log('Connected client on port %s.', this.port);
             socket.on('register-player', (data:any) => {
+                if(_.toArray(_.pickBy(this.players)).length === 0) {
+                    console.log('starting poller...');
+                    this.poller = setInterval(() => this.matchPlayers(), 1000);
+                }
                 this.players[socket.id] = {
                     socket: socket.id,
                     username: data.username
@@ -64,6 +67,10 @@ export class MatchMakerService {
                     if(this.players[socketId].socket === socket.id) {
                         console.log(`${this.players[socketId].username} disconnected`);
                         delete this.players[socketId];
+                        if(_.toArray(_.pickBy(this.players)).length === 0) {
+                            console.log('killing poller...');
+                            clearInterval(this.poller);
+                        }
                         break;
                     }
                 }	
