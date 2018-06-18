@@ -4,7 +4,7 @@ import { Observer } from 'rxjs/Observer';
 
 import * as socketIo from 'socket.io-client';
 
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = 'http://localhost:80';
 
 @Injectable()
 export class SocketService {
