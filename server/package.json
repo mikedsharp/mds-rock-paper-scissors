@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --require ts-node/register tests/**/**.ts",
     "build": "webpack --config webpack.config.js",
-    "start": "npm install && npm run build && node ./dist/server.js"
+    "postinstall": "npm run build",
+    "start": "node ./dist/server.js"
   },
   "author": "",
   "license": "ISC",
