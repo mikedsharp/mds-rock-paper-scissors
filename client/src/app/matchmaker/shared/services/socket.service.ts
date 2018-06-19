@@ -4,7 +4,7 @@ import { Observer } from 'rxjs/Observer';
 
 import * as socketIo from 'socket.io-client';
 
-const SERVER_URL = 'https://mds-rock-paper-scissors-server.herokuapp.com:80';
+const SERVER_URL = 'https://mds-rock-paper-scissors-server.herokuapp.com';
 
 @Injectable()
 export class SocketService {
