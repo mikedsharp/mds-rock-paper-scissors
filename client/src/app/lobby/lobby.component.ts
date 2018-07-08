@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SocketService} from '../matchmaker/shared/services/socket.service';
+import {GameOutcomes} from '../models/GameOutcomes';
+import {PlayerMoves} from '../models/PlayerMoves';
 
 @Component({
   selector: 'app-lobby',
@@ -10,10 +12,13 @@ export class LobbyComponent implements OnInit {
 
   private messageContent: string;
   private ioConnection: any;
+  private onPlayerDecision: any;
   private messages: any[] = [];
   private username: string;
   private nameSubmitted: boolean;
   private opponent: object;
+  private gameOutcomes: GameOutcomes;
+  private matchDecision: any;
 
   constructor(private socketService: SocketService) {
 
@@ -23,6 +28,8 @@ export class LobbyComponent implements OnInit {
     this.username = '';
     this.opponent = null;
     this.nameSubmitted = false;
+    this.matchDecision = null;
+
     this.initIoConnection();
   }
 
@@ -30,6 +37,9 @@ export class LobbyComponent implements OnInit {
     this.socketService.send(message);
   }
 
+  sendPlayerMove(move: PlayerMoves) {
+    this.socketService.sendPlayerMove(move);
+  }
   registerPlayer(name: string) {
     this.nameSubmitted = true;
     this.socketService.registerPlayer(name);
@@ -45,6 +55,10 @@ export class LobbyComponent implements OnInit {
     this.ioConnection = this.socketService.onPlayerMatched()
       .subscribe((data: any) => {
         this.opponent = data.opponent;
+      });
+    this.onPlayerDecision = this.socketService.onMatchDecision()
+      .subscribe((data: any) => {
+        this.matchDecision = data.matchDecision;
       });
   }
 }
