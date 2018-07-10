@@ -25,7 +25,7 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(appRoutes, { enableTracing: true }),
+    RouterModule.forRoot(appRoutes, { enableTracing: true, useHash: true }),
     MatchmakerModule
   ],
   providers: [SocketService],
