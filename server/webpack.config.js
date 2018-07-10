@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 var nodeModules = {};
 fs.readdirSync('node_modules')
   .filter(function(x) {
@@ -9,12 +10,12 @@ fs.readdirSync('node_modules')
   });
 
 module.exports = {
-  entry: './src/server.ts',
+  entry: path.resolve(__dirname, 'src/server.ts'),
   output: {
-    path: __dirname + '/dist',
     filename: 'server.js',
+    path: path.resolve(__dirname, 'dist')
   },
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   resolve: {
     // Add '.ts' and '.tsx' as a resolvable extension.
     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],

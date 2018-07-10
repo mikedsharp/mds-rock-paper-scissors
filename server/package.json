@@ -7,14 +7,14 @@
     "test": "mocha --require ts-node/register tests/**/**.ts",
     "build": "webpack --config webpack.config.js",
     "postinstall": "npm run build",
-    "start": "node ./dist/server.js"
+    "start": "node ./dist/server.js",
+    "debug-build": "tsc --lib 'ES2015'"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/lodash": "^4.14.108",
     "@types/socket.io": "^1.4.33",
-    "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",

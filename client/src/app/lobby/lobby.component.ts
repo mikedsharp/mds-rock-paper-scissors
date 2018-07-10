@@ -13,12 +13,12 @@ export class LobbyComponent implements OnInit {
   private messageContent: string;
   private ioConnection: any;
   private onPlayerDecision: any;
-  private messages: any[] = [];
-  private username: string;
-  private nameSubmitted: boolean;
-  private opponent: object;
+  public messages: any[] = [];
+  public username: string;
+  public nameSubmitted: boolean;
+  public opponent: object;
   private gameOutcomes: GameOutcomes;
-  private matchDecision: any;
+  public matchDecision: any;
 
   constructor(private socketService: SocketService) {
 

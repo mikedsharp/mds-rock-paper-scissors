@@ -3,7 +3,7 @@
       "src/server.ts"
     ],
     "include": [
-      "src/**/*.ts"
+      "src/**/*"
     ],
     "compilerOptions": {
       "module": "commonjs",
@@ -21,7 +21,8 @@
       "paths": {
         "*": [
           "node_modules/@types/*",
-          "./src/types/*"
+          "./src/types/*",
+          "node_modules/*"
         ]
       }
     }
