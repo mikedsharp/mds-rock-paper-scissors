@@ -1,5 +1,5 @@
 export enum PlayerMoves {
-    ROCK = 0,
-    PAPER,
-    SCISSORS
+  ROCK = 0,
+  PAPER,
+  SCISSORS
 }

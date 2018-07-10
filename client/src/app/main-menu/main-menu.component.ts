@@ -1,21 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
-  selector: 'app-main-menu',
-  templateUrl: './main-menu.component.html',
-  styleUrls: ['./main-menu.component.css']
+  selector: "app-main-menu",
+  templateUrl: "./main-menu.component.html",
+  styleUrls: ["./main-menu.component.css"]
 })
 export class MainMenuComponent implements OnInit {
+  constructor(private router: Router) {}
 
-  constructor(private router: Router) { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   startGame() {
-    console.log('game start!');
-    this.router.navigate(['lobby']);
+    console.log("game start!");
+    this.router.navigate(["lobby"]);
   }
-
 }
