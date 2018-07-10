@@ -13,7 +13,8 @@
             "outFiles": [
                 "../server/dist/**/*.js"
             ],
-            "protocol": "inspector"
+            "protocol": "inspector",
+            "sourceMaps": true
         }
     ]
 }

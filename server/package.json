@@ -7,8 +7,7 @@
     "test": "mocha --require ts-node/register tests/**/**.ts",
     "build": "webpack --config webpack.config.js",
     "postinstall": "npm run build",
-    "start": "node ./dist/server.js",
-    "debug-build": "tsc --lib 'ES2015'"
+    "start": "node ./dist/server.js"
   },
   "author": "",
   "license": "ISC",
