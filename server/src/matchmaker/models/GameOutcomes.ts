@@ -1,5 +1,5 @@
 export enum GameOutcomes {
-    WIN = 0,
-    LOSE,
-    DRAW
+  WIN = 0,
+  LOSE,
+  DRAW
 }
