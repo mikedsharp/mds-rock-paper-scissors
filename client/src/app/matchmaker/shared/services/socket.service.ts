@@ -5,8 +5,8 @@ import { Observer } from 'rxjs/Observer';
 import * as socketIo from 'socket.io-client';
 import { PlayerMoves } from '../../../models/PlayerMoves';
 
-const SERVER_URL = 'http://localhost';
-// const SERVER_URL = 'https://mds-rock-paper-scissors-server.herokuapp.com';
+// const SERVER_URL = 'http://localhost';
+const SERVER_URL = 'https://mds-rock-paper-scissors-server.herokuapp.com';
 
 @Injectable()
 export class SocketService {
