@@ -1,6 +1,12 @@
 {
   "name": "mds-rock-paper-scissors-client",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "author": "Mike D Sharp",
+  "description": "A Websockets-enabled game of rock, paper, scissors, play with someone else, somewhere!",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/programmerinprogress/mds-rock-paper-scissors.git"
+  },
   "license": "MIT",
   "scripts": {
     "ng": "ng",
