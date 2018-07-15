@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import { SocketService } from "../matchmaker/shared/services/socket.service";
-import { GameOutcomes } from "../models/GameOutcomes";
-import { PlayerMoves } from "../models/PlayerMoves";
+import { Component, OnInit } from '@angular/core';
+import { SocketService } from '../matchmaker/shared/services/socket.service';
+import { GameOutcomes } from '../models/GameOutcomes';
+import { PlayerMoves } from '../models/PlayerMoves';
 
 @Component({
-  selector: "app-lobby",
-  templateUrl: "./lobby.component.html",
-  styleUrls: ["./lobby.component.css"]
+  selector: 'app-lobby',
+  templateUrl: './lobby.component.html',
+  styleUrls: ['./lobby.component.css']
 })
 export class LobbyComponent implements OnInit {
   private messageContent: string;
@@ -27,7 +27,7 @@ export class LobbyComponent implements OnInit {
   constructor(private socketService: SocketService) {}
 
   ngOnInit(): void {
-    this.username = "";
+    this.username = '';
     this.opponent = null;
     this.nameSubmitted = false;
     this.serverAcknowledgedPlayer = false;
@@ -68,13 +68,13 @@ export class LobbyComponent implements OnInit {
   getPlayerMove(move: PlayerMoves) {
     switch (move) {
       case PlayerMoves.ROCK: {
-        return "Rock";
+        return 'Rock';
       }
       case PlayerMoves.PAPER: {
-        return "Paper";
+        return 'Paper';
       }
       case PlayerMoves.SCISSORS: {
-        return "Scissors";
+        return 'Scissors';
       }
     }
   }
@@ -82,13 +82,13 @@ export class LobbyComponent implements OnInit {
   getResultTypeFromMatchResult(result: GameOutcomes) {
     switch (result) {
       case GameOutcomes.DRAW:
-        return "draw";
+        return 'draw';
       case GameOutcomes.WIN:
-        return "win";
+        return 'win';
       case GameOutcomes.LOSE:
-        return "lose";
+        return 'lose';
       case GameOutcomes.FORFEIT:
-        return "forfeit: opponent disconnected";
+        return 'forfeit: opponent disconnected';
     }
   }
 

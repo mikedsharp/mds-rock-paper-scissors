@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { Observer } from "rxjs/Observer";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
 
-import * as socketIo from "socket.io-client";
-import { PlayerMoves } from "../../../models/PlayerMoves";
+import * as socketIo from 'socket.io-client';
+import { PlayerMoves } from '../../../models/PlayerMoves';
 
-const SERVER_URL = "http://localhost:80";
+const SERVER_URL = 'http://localhost:80';
 // const SERVER_URL = "https://mds-rock-paper-scissors-server.herokuapp.com";
 
 @Injectable()
@@ -17,37 +17,37 @@ export class SocketService {
   }
 
   public send(message: any): void {
-    this.socket.emit("message", message);
+    this.socket.emit('message', message);
   }
 
   public registerPlayer(name: string) {
-    this.socket.emit("register-player", { username: name });
+    this.socket.emit('register-player', { username: name });
   }
 
   public onPlayerMatched(): Observable<any> {
     return new Observable<any>(observer => {
-      this.socket.on("player-matched", (data: any) => observer.next(data));
+      this.socket.on('player-matched', (data: any) => observer.next(data));
     });
   }
 
   public onOpponentDisconnected(): Observable<any> {
     return new Observable<any>(observer => {
-      this.socket.on("player-disconnected", () => observer.next());
+      this.socket.on('player-disconnected', () => observer.next());
     });
   }
 
   public onPlayerAcknowledged(): Observable<any> {
     return new Observable<any>(observer => {
-      this.socket.on("player-acknowledged", () => observer.next());
+      this.socket.on('player-acknowledged', () => observer.next());
     });
   }
   public sendPlayerMove(move: PlayerMoves) {
-    this.socket.emit("answer-submitted", { move: move });
+    this.socket.emit('answer-submitted', { move: move });
   }
 
   public onMatchDecision(): Observable<any> {
     return new Observable<any>(observer => {
-      this.socket.on("match-decision", (data: any) => observer.next(data));
+      this.socket.on('match-decision', (data: any) => observer.next(data));
     });
   }
 }
