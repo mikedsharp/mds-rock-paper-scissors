@@ -42,31 +42,49 @@ export class MatchMakerService {
       return;
     }
 
-    unmatchedPlayers[0].matched = true;
-    unmatchedPlayers[1].matched = true;
+    const playersListLength = unmatchedPlayers.length;
+    let firstPlayerIndex;
+    let secondPlayerIndex;
+
+    firstPlayerIndex = Math.floor(Math.random() * playersListLength);
+    unmatchedPlayers[firstPlayerIndex].matched = true;
+
+    do {
+      secondPlayerIndex = Math.floor(Math.random() * playersListLength);
+    } while (secondPlayerIndex === firstPlayerIndex);
+
+    unmatchedPlayers[secondPlayerIndex].matched = true;
 
     console.log(
-      `player '${unmatchedPlayers[0].username}' matched with player '${
-        unmatchedPlayers[1].username
-      }'`
+      `player '${
+        unmatchedPlayers[firstPlayerIndex].username
+      }' matched with player '${unmatchedPlayers[secondPlayerIndex].username}'`
     );
 
     this.sessions.push(
-      new GameSession(unmatchedPlayers[0], unmatchedPlayers[1])
+      new GameSession(
+        unmatchedPlayers[firstPlayerIndex],
+        unmatchedPlayers[secondPlayerIndex]
+      )
     );
 
-    this.io.sockets.connected[unmatchedPlayers[0].socket].emit(
+    this.io.sockets.connected[unmatchedPlayers[firstPlayerIndex].socket].emit(
       "player-matched",
       {
-        opponent: unmatchedPlayers[1].username
+        opponent: unmatchedPlayers[secondPlayerIndex].username
       }
     );
-    this.io.sockets.connected[unmatchedPlayers[1].socket].emit(
+    this.io.sockets.connected[unmatchedPlayers[secondPlayerIndex].socket].emit(
       "player-matched",
       {
-        opponent: unmatchedPlayers[0].username
+        opponent: unmatchedPlayers[firstPlayerIndex].username
       }
     );
+  }
+  private removeSession(session: GameSession) {
+    // remove session from list of sessions
+    const sessionIndex = this.sessions.indexOf(session);
+    this.sessions.splice(sessionIndex, 1);
   }
   private listen(): void {
     this.server.listen(this.port, () => {
@@ -106,13 +124,15 @@ export class MatchMakerService {
               matchDecision: matchDecision[playerSessions[0].playerTwo.username]
             }
           );
+
+          this.removeSession(playerSessions[0]);
         }
       });
       socket.on("register-player", (data: any) => {
         console.log("in register player...");
         if (_.toArray(_.pickBy(this.players)).length === 0) {
           console.log("starting poller...");
-          this.poller = setInterval(() => this.matchPlayers(), 1000);
+          this.poller = setInterval(() => this.matchPlayers(), 5000);
         }
         this.players[socket.id] = new Player(data.username, socket.id);
         console.log(`registered player: ${data.username}`);
@@ -124,6 +144,25 @@ export class MatchMakerService {
           if (this.players[socketId].socket === socket.id) {
             console.log(`${this.players[socketId].username} disconnected`);
             delete this.players[socketId];
+            const leavingPlayersSession = this.sessions.filter(session => {
+              return (
+                session.playerOne.socket === socketId ||
+                session.playerTwo.socket === socketId
+              );
+            });
+            if (leavingPlayersSession.length > 0) {
+              if (leavingPlayersSession[0].playerOne.socket === socketId) {
+                this.io.sockets.connected[
+                  leavingPlayersSession[0].playerTwo.socket
+                ].emit("player-disconnected");
+              } else {
+                this.io.sockets.connected[
+                  leavingPlayersSession[0].playerOne.socket
+                ].emit("player-disconnected");
+              }
+              this.removeSession(leavingPlayersSession[0]);
+            }
+
             if (_.toArray(_.pickBy(this.players)).length === 0) {
               console.log("killing poller...");
               clearInterval(this.poller);

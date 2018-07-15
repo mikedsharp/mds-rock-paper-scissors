@@ -1,18 +1,24 @@
 <h1>Game lobby</h1>
-<span>{{username}}</span><br/>
+<span>{{username}}</span>
+<br/>
 <input [disabled]="nameSubmitted" #usernameField type="text" (keyup)="setUsername(usernameField.value)" />
 <button [disabled]="nameSubmitted" (click)="registerPlayer(username)">Register with matchmaker server</button>
 <h3 *ngIf="nameSubmitted">Registered with matchmaker server, finding you an opponent!</h3>
 <div *ngIf="opponent">
-        <h3 *ngIf="opponent">You have been matched with '{{opponent}}'</h3>
-        <button (click)="sendPlayerMove(0)">Rock</button>
-        <button (click)="sendPlayerMove(1)">Paper</button>
-        <button (click)="sendPlayerMove(2)">Scissors</button>
+    <h3 *ngIf="opponent">You have been matched with '{{opponent}}'</h3>
+    <button (click)="sendPlayerMove(0)">Rock</button>
+    <button (click)="sendPlayerMove(1)">Paper</button>
+    <button (click)="sendPlayerMove(2)">Scissors</button>
 </div>
 
 
 <ul>
-    <li *ngFor="let message of messages">{{message}}</li>
+    <li *ngFor="let result of pastMatchResults">
+        {{result.playerName}} vs {{result.opponent}}
+        <span>
+            {{getResultTypeFromMatchResult(result.matchDecision)}}
+        </span>
+    </li>
 </ul>
 
 
