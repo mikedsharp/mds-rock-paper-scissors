@@ -36,6 +36,11 @@ export class SocketService {
     });
   }
 
+  public onPlayerAcknowledged(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on("player-acknowledged", () => observer.next());
+    });
+  }
   public sendPlayerMove(move: PlayerMoves) {
     this.socket.emit("answer-submitted", { move: move });
   }

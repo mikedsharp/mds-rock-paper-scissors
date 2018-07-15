@@ -13,13 +13,16 @@ export class LobbyComponent implements OnInit {
   private ioConnection: any;
   private onPlayerDecision: any;
   private onOpponentDisconnected: any;
+  private onPlayerAcknowledged: any;
   public messages: any[] = [];
   public username: string;
   public nameSubmitted: boolean;
+  public serverAcknowledgedPlayer: boolean;
   public opponent: object;
   private gameOutcomes: GameOutcomes;
   public matchDecision: any;
   public pastMatchResults: Array<any>;
+  private lastMove: PlayerMoves;
 
   constructor(private socketService: SocketService) {}
 
@@ -27,7 +30,9 @@ export class LobbyComponent implements OnInit {
     this.username = "";
     this.opponent = null;
     this.nameSubmitted = false;
+    this.serverAcknowledgedPlayer = false;
     this.matchDecision = null;
+    this.lastMove = null;
     this.pastMatchResults = [];
 
     this.initIoConnection();
@@ -38,6 +43,7 @@ export class LobbyComponent implements OnInit {
   }
 
   sendPlayerMove(move: PlayerMoves) {
+    this.lastMove = move;
     this.socketService.sendPlayerMove(move);
   }
   registerPlayer(name: string) {
@@ -49,12 +55,28 @@ export class LobbyComponent implements OnInit {
   }
   startNewGame() {
     this.opponent = null;
+    this.lastMove = null;
     this.matchDecision = null;
+    this.serverAcknowledgedPlayer = false;
     this.socketService.registerPlayer(this.username);
   }
 
   get canPlayNewGame() {
     return this.matchDecision !== null;
+  }
+
+  getPlayerMove(move: PlayerMoves) {
+    switch (move) {
+      case PlayerMoves.ROCK: {
+        return "Rock";
+      }
+      case PlayerMoves.PAPER: {
+        return "Paper";
+      }
+      case PlayerMoves.SCISSORS: {
+        return "Scissors";
+      }
+    }
   }
 
   getResultTypeFromMatchResult(result: GameOutcomes) {
@@ -79,6 +101,11 @@ export class LobbyComponent implements OnInit {
       .subscribe((data: any) => {
         this.opponent = data.opponent;
       });
+    this.onPlayerAcknowledged = this.socketService
+      .onPlayerAcknowledged()
+      .subscribe(() => {
+        this.serverAcknowledgedPlayer = true;
+      });
     this.onPlayerDecision = this.socketService
       .onMatchDecision()
       .subscribe((data: any) => {
@@ -86,7 +113,9 @@ export class LobbyComponent implements OnInit {
         this.pastMatchResults.push({
           playerName: this.username,
           opponent: this.opponent,
-          matchDecision: this.matchDecision
+          matchDecision: this.matchDecision,
+          playerMove: this.lastMove,
+          opponentMove: data.opponentMove
         });
         this.startNewGame();
       });

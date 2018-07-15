@@ -3,18 +3,20 @@
 <br/>
 <input [disabled]="nameSubmitted" #usernameField type="text" (keyup)="setUsername(usernameField.value)" />
 <button [disabled]="nameSubmitted" (click)="registerPlayer(username)">Register with matchmaker server</button>
-<h3 *ngIf="nameSubmitted">Registered with matchmaker server, finding you an opponent!</h3>
-<div *ngIf="opponent">
-    <h3 *ngIf="opponent">You have been matched with '{{opponent}}'</h3>
-    <button (click)="sendPlayerMove(0)">Rock</button>
-    <button (click)="sendPlayerMove(1)">Paper</button>
-    <button (click)="sendPlayerMove(2)">Scissors</button>
+<h3 *ngIf="nameSubmitted && !serverAcknowledgedPlayer">Contacting match server, please wait...</h3>
+<h3 *ngIf="serverAcknowledgedPlayer">Registered with matchmaker server, finding you an opponent!</h3>
+
+<div *ngIf="opponent ">
+    <h3 *ngIf="opponent ">You have been matched with '{{opponent}}'</h3>
+    <button (click)="sendPlayerMove(0) ">Rock</button>
+    <button (click)="sendPlayerMove(1) ">Paper</button>
+    <button (click)="sendPlayerMove(2) ">Scissors</button>
 </div>
 
 
 <ul>
-    <li *ngFor="let result of pastMatchResults">
-        {{result.playerName}} vs {{result.opponent}}
+    <li *ngFor="let result of pastMatchResults ">
+        {{result.playerName}} ({{getPlayerMove(result.playerMove)}}) vs {{result.opponent}} ({{getPlayerMove(result.opponentMove)}})
         <span>
             {{getResultTypeFromMatchResult(result.matchDecision)}}
         </span>
@@ -22,8 +24,8 @@
 </ul>
 
 
-<div *ngIf="matchDecision !== null">
-    <h4 *ngIf="matchDecision === 0">You Won!</h4>
-    <h4 *ngIf="matchDecision === 1">You Lost :(</h4>
-    <h4 *ngIf="matchDecision === 2">You Drew</h4>
+<div *ngIf="matchDecision !==n ull ">
+    <h4 *ngIf="matchDecision===0 ">You Won!</h4>
+    <h4 *ngIf="matchDecision===1 ">You Lost :(</h4>
+    <h4 *ngIf="matchDecision===2 ">You Drew</h4>
 </div>

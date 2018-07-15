@@ -115,13 +115,17 @@ export class MatchMakerService {
           this.io.sockets.connected[playerSessions[0].playerOne.socket].emit(
             "match-decision",
             {
-              matchDecision: matchDecision[playerSessions[0].playerOne.username]
+              matchDecision:
+                matchDecision[playerSessions[0].playerOne.username],
+              opponentMove: playerSessions[0].playerTwo.move
             }
           );
           this.io.sockets.connected[playerSessions[0].playerTwo.socket].emit(
             "match-decision",
             {
-              matchDecision: matchDecision[playerSessions[0].playerTwo.username]
+              matchDecision:
+                matchDecision[playerSessions[0].playerTwo.username],
+              opponentMove: playerSessions[0].playerOne.move
             }
           );
 
@@ -135,6 +139,7 @@ export class MatchMakerService {
           this.poller = setInterval(() => this.matchPlayers(), 5000);
         }
         this.players[socket.id] = new Player(data.username, socket.id);
+        this.io.sockets.connected[socket.id].emit("player-acknowledged");
         console.log(`registered player: ${data.username}`);
       });
 
