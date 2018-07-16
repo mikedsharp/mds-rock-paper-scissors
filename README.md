@@ -22,4 +22,18 @@ First things first, I decided to make this project a mono-repo, so there are sep
 
 4.  navigate to `localhost:4200 in your browser`
 
-### For more information about
+#### For more information about running angular projects, consult the README in the `client folder` or go to the angular-cli documentation page https://github.com/angular/angular-cli/wiki to troubleshoot any issues.
+
+### Running the server
+
+1.  In the project root type `cd server`
+
+2.  do an `npm install`
+
+3.  Type `npm run build` in the terminal to generate a build in the dist folder (this will turn the TypeScript project into an executable JavaScript project, but will also generate sourcemaps that will allow you to debug the TypeScript)
+
+4.  Type `npm start` in the terminal to begin serving, the app will look for the environment variable process.env.PORT, but if it can't find that variable, it will default to port 80
+
+### Deploying
+
+To follow soon, after I do the demo video!
