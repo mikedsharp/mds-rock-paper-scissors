@@ -12,7 +12,7 @@ let mockPlayerOne: Player;
 let mockPlayerTwo: Player;
 let mockSession: GameSession;
 
-suite.only('DecisionMakerService.getMatchDecision()', () => {
+suite('DecisionMakerService.getMatchDecision()', () => {
   setup(function() {
     service = new DecisionMakerService();
     mockPlayerOne = new Player('player1', 'player-1-socket-id');
