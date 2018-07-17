@@ -19,7 +19,8 @@ suite.only('DecisionMakerService.getMatchDecision()', () => {
     mockPlayerTwo = new Player('player2', 'player-2-socket-id');
     mockSession = new GameSession(mockPlayerOne, mockPlayerTwo);
   });
-  test('Should return a match decision, player one loses player two wins', () => {
+  test(`player one chooses rock, player two chooses paper, 
+        player one should lose, player one should win`, () => {
     mockPlayerOne.move = PlayerMoves.ROCK;
     mockPlayerTwo.move = PlayerMoves.PAPER;
 
@@ -31,6 +32,36 @@ suite.only('DecisionMakerService.getMatchDecision()', () => {
       mockPlayerTwo.username,
       GameOutcomes.LOSE,
       GameOutcomes.WIN
+    );
+  });
+  test(`player one chooses paper, player two chooses rock, 
+        player one should win, player one should lose`, () => {
+    mockPlayerOne.move = PlayerMoves.PAPER;
+    mockPlayerTwo.move = PlayerMoves.ROCK;
+
+    const result = service.getMatchDecision(mockSession);
+
+    assertGameOutcome(
+      result,
+      mockPlayerOne.username,
+      mockPlayerTwo.username,
+      GameOutcomes.WIN,
+      GameOutcomes.LOSE
+    );
+  });
+  test(`player one chooses paper, player two chooses paper, 
+        player one should draw, player one should draw`, () => {
+    mockPlayerOne.move = PlayerMoves.PAPER;
+    mockPlayerTwo.move = PlayerMoves.PAPER;
+
+    const result = service.getMatchDecision(mockSession);
+
+    assertGameOutcome(
+      result,
+      mockPlayerOne.username,
+      mockPlayerTwo.username,
+      GameOutcomes.DRAW,
+      GameOutcomes.DRAW
     );
   });
 });
