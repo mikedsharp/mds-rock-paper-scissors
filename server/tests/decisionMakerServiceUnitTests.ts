@@ -1,6 +1,5 @@
-import { expect } from 'chai';
-import { assert } from 'chai';
 import 'mocha';
+import { assert } from 'chai';
 import { DecisionMakerService } from '../src/matchmaker/services/DecisionMakerService';
 import { GameSession } from '../src/matchmaker/models/GameSession';
 import { Player } from '../src/matchmaker/models/Player';
