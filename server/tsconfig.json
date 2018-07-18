@@ -1,29 +1,22 @@
 {
-    "files": [
-      "src/server.ts"
-    ],
-    "include": [
-      "src/**/*"
-    ],
-    "compilerOptions": {
-      "module": "commonjs",
-      "noImplicitAny": true,
-      "target": "es5",
-      "outDir": "dist",
-      "rootDir": "src",
-      "sourceMap": true,
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "baseUrl": ".",
-      "moduleResolution": "node",
-      "removeComments": true,
-      "typeRoots": [ "node_modules/@types" ],
-      "paths": {
-        "*": [
-          "node_modules/@types/*",
-          "./src/types/*",
-          "node_modules/*"
-        ]
-      }
+  "files": ["src/server.ts"],
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "target": "es5",
+    "outDir": "dist",
+    "rootDir": "src",
+    "sourceMap": true,
+    "lib": ["es2015"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "typeRoots": ["node_modules/@types"],
+    "paths": {
+      "*": ["node_modules/@types/*", "./src/types/*", "node_modules/*"]
     }
   }
+}

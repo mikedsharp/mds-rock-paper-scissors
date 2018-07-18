@@ -1,12 +1,17 @@
-import { GameSession } from "../models/GameSession";
-import { GameOutcomes } from "../models/GameOutcomes";
-import { PlayerMoves } from "../models/PlayerMoves";
-import { Player } from "../models/Player";
+import { GameSession } from '../models/GameSession';
+import { GameOutcomes } from '../models/GameOutcomes';
+import { PlayerMoves } from '../models/PlayerMoves';
+import { Player } from '../models/Player';
+import { InvalidPlayerMoveException } from '../exceptions/InvalidPlayerMoveException';
 
 export class DecisionMakerService {
   public getMatchDecision(session: GameSession) {
-    const playerOneMove = session.playerOne.move;
-    const playerTwoMove = session.playerTwo.move;
+    const playerOneMove: PlayerMoves = session.playerOne.move;
+    const playerTwoMove: PlayerMoves = session.playerTwo.move;
+
+    if (!(playerOneMove in PlayerMoves) || !(playerTwoMove in PlayerMoves)) {
+      throw new InvalidPlayerMoveException('invalid player move');
+    }
 
     if (playerOneMove === playerTwoMove) {
       return this.assignMatchOutcome(
