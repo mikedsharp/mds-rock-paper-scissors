@@ -1,35 +1,23 @@
 import * as socketIo from 'socket.io';
-import { createServer, Server } from 'http';
-import * as express from 'express';
 import * as _ from 'lodash';
 import { Player } from '../models/Player';
 import { GameSession } from '../models/GameSession';
 import { DecisionMakerService } from './DecisionMakerService';
+import { SocketService } from './SocketService';
+import { SessionService } from './SessionService';
 
 export class MatchMakerService {
-  private io: socketIo.Server;
-  private app: express.Application;
-  private server: Server;
-  private port: Number;
+  private socketService: SocketService;
+  private sessionService: SessionService;
   private players: any;
-  private sessions: GameSession[];
   private decisionMaker: DecisionMakerService;
   private poller: any;
-  constructor(app: express.Application, port: Number) {
-    this.app = app;
-    this.port = port;
+  constructor(socketService: SocketService) {
     this.players = {};
-    this.sessions = [];
+    this.socketService = socketService;
+    this.socketService.addListener(this.onPlayerConnect.bind(this));
     this.decisionMaker = new DecisionMakerService();
-    this.createServer();
-    this.sockets();
-    this.listen();
-  }
-  private sockets(): void {
-    this.io = socketIo(this.server);
-  }
-  private createServer(): void {
-    this.server = createServer(this.app);
+    this.sessionService = new SessionService();
   }
   private matchPlayers() {
     const unmatchedPlayers: Player[] = _.toArray(
@@ -61,67 +49,49 @@ export class MatchMakerService {
       }' matched with player '${unmatchedPlayers[secondPlayerIndex].username}'`
     );
 
-    this.sessions.push(
-      new GameSession(
-        unmatchedPlayers[firstPlayerIndex],
-        unmatchedPlayers[secondPlayerIndex]
-      )
+    this.sessionService.createNewSession(
+      unmatchedPlayers[firstPlayerIndex],
+      unmatchedPlayers[secondPlayerIndex]
     );
 
-    this.io.sockets.connected[unmatchedPlayers[firstPlayerIndex].socket].emit(
-      'player-matched',
-      {
-        opponent: unmatchedPlayers[secondPlayerIndex].username
-      }
-    );
-    this.io.sockets.connected[unmatchedPlayers[secondPlayerIndex].socket].emit(
-      'player-matched',
-      {
-        opponent: unmatchedPlayers[firstPlayerIndex].username
-      }
-    );
+    this.socketService.connectedClients[
+      unmatchedPlayers[firstPlayerIndex].socket
+    ].emit('player-matched', {
+      opponent: unmatchedPlayers[secondPlayerIndex].username
+    });
+    this.socketService.connectedClients[
+      unmatchedPlayers[secondPlayerIndex].socket
+    ].emit('player-matched', {
+      opponent: unmatchedPlayers[firstPlayerIndex].username
+    });
   }
-  private removeSession(session: GameSession) {
-    // remove session from list of sessions
-    const sessionIndex = this.sessions.indexOf(session);
-    this.sessions.splice(sessionIndex, 1);
-  }
+
   private onAnswerSubmitted(socket: socketIo.Socket, data: any) {
     console.log('answer was submitted...', data);
-    const playerSessions = this.sessions.filter(session => {
-      return (
-        session.playerOne.socket === socket.id ||
-        session.playerTwo.socket === socket.id
-      );
-    });
-    if (playerSessions.length === 0) {
-      return;
-    }
-    playerSessions[0].registerPlayerMove(
+    const playerSession = this.sessionService.getSessionBySocketId(socket.id);
+    playerSession.registerPlayerMove(
       this.players[socket.id].username,
       data.move
     );
 
-    if (playerSessions[0].playersMovesSubmitted) {
-      const matchDecision = this.decisionMaker.getMatchDecision(
-        playerSessions[0]
-      );
-      this.io.sockets.connected[playerSessions[0].playerOne.socket].emit(
+    if (playerSession.playersMovesSubmitted) {
+      const matchDecision = this.decisionMaker.getMatchDecision(playerSession);
+      this.socketService.connectedClients[playerSession.playerOne.socket].emit(
         'match-decision',
         {
-          matchDecision: matchDecision[playerSessions[0].playerOne.username],
-          opponentMove: playerSessions[0].playerTwo.move
+          matchDecision: matchDecision[playerSession.playerOne.username],
+          opponentMove: playerSession.playerTwo.move
         }
       );
-      this.io.sockets.connected[playerSessions[0].playerTwo.socket].emit(
+      this.socketService.connectedClients[playerSession.playerTwo.socket].emit(
         'match-decision',
         {
-          matchDecision: matchDecision[playerSessions[0].playerTwo.username],
-          opponentMove: playerSessions[0].playerOne.move
+          matchDecision: matchDecision[playerSession.playerTwo.username],
+          opponentMove: playerSession.playerOne.move
         }
       );
 
-      this.removeSession(playerSessions[0]);
+      this.sessionService.remove(playerSession);
     }
   }
   private onRegisterPlayer(socket: socketIo.Socket, data: any) {
@@ -131,7 +101,7 @@ export class MatchMakerService {
       this.poller = setInterval(() => this.matchPlayers(), 5000);
     }
     this.players[socket.id] = new Player(data.username, socket.id);
-    this.io.sockets.connected[socket.id].emit('player-acknowledged');
+    this.socketService.connectedClients[socket.id].emit('player-acknowledged');
     console.log(`registered player: ${data.username}`);
   }
   private onPlayerDisconnected(socket: socketIo.Socket) {
@@ -140,23 +110,21 @@ export class MatchMakerService {
       if (this.players[socketId].socket === socket.id) {
         console.log(`${this.players[socketId].username} disconnected`);
         delete this.players[socketId];
-        const leavingPlayersSession = this.sessions.filter(session => {
-          return (
-            session.playerOne.socket === socketId ||
-            session.playerTwo.socket === socketId
-          );
-        });
-        if (leavingPlayersSession.length > 0) {
-          if (leavingPlayersSession[0].playerOne.socket === socketId) {
-            this.io.sockets.connected[
-              leavingPlayersSession[0].playerTwo.socket
+
+        const leavingPlayersSession = this.sessionService.getSessionBySocketId(
+          socketId
+        );
+        if (leavingPlayersSession) {
+          if (leavingPlayersSession.playerOne.socket === socketId) {
+            this.socketService.connectedClients[
+              leavingPlayersSession.playerTwo.socket
             ].emit('player-disconnected');
           } else {
-            this.io.sockets.connected[
-              leavingPlayersSession[0].playerOne.socket
+            this.socketService.connectedClients[
+              leavingPlayersSession.playerOne.socket
             ].emit('player-disconnected');
           }
-          this.removeSession(leavingPlayersSession[0]);
+          this.sessionService.remove(leavingPlayersSession);
         }
 
         if (_.toArray(_.pickBy(this.players)).length === 0) {
@@ -179,13 +147,7 @@ export class MatchMakerService {
     });
   }
   private onPlayerConnect(socket: socketIo.Socket) {
-    console.log('Connected client on port %s.', this.port);
+    console.log('Connected client');
     this.registerPlayerEventListeners(socket);
-  }
-  private listen(): void {
-    this.server.listen(this.port, () => {
-      console.log('Running websocket server on port %s', this.port);
-    });
-    this.io.on('connect', (socket: any) => this.onPlayerConnect(socket));
   }
 }
