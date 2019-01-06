@@ -13,6 +13,7 @@ export class SessionService {
     this._sessions.splice(sessionIndex, 1);
     return this._sessions;
   }
+  
   public createNewSession(playerOne: Player, playerTwo: Player): GameSession {
     const newSession = new GameSession(playerOne, playerTwo);
     this._sessions.push(newSession);
